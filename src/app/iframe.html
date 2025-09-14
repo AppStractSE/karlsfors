@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Test</title>
+    <!-- import the nicest font, which is not roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <header style="border-bottom: 1px solid rgba(0,0,0,0.25);">
+        <div
+            style="margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; padding: 1rem; justify-items: stretch;">
+            <div style="display: flex; gap: 1rem; ">
+                <div>Om oss</div>
+                <div>Museet</div>
+                <div>Vinterförvaring</div>
+                <div>Logen</div>
+            </div>
+            <div style="display: flex; justify-content: center;">
+                <img src="https://karlsfors.se/img/logga.png" height="100" width="auto" />
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: end; align-items: center;">
+                <div>Butiken</div>
+                <div>På gång</div>
+                <div style="border-radius: 999px; border: 1px solid rgba(0,0,0,0.25); padding: 0.5rem 1rem;">Boka</div>
+            </div>
+        </div>
+        </div>
+    </header>
+    <div style="padding: 1rem; opacity: .75; font-size: .85rem;">Hem / Julbord på Karlsfors Gård</div>
+    <div style="max-width: 980px; margin: 0 auto;">
+        <p style=" margin-top: 4rem; text-align: center; margin-bottom: 1rem;">3-6 & 10-13 December</p>
+        <h1 style="text-align: center; font-size: 3.5rem; margin-bottom: 4rem;">
+            Julbord på Karlsfors Gård
+        </h1>
+        <img src="https://www.kastellet.com/wp-content/uploads/2018/02/800x800-julbord.jpg"
+            style="max-width: 100%; max-height: 500px; width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 12px;" />
+        <div style="display: flex; gap: 2rem; margin-top: 2rem;">
+            <div style="flex: 1;">
+                <h2>Fira in julen med ditt företag på Karlsfors</h2>
+                <p style="margin-top: 1rem; line-height: 1.5; font-size: 1rem;">
+
+                    Upplev ett julbord utöver det vanliga! Här möts
+                    klassiska julsmaker och
+                    en stämningsfull miljö inspirerad av sekelskiftets traditioner.
+
+                    Kvällen ramas in av julig livemusik och ett dignande julbord, omsorgsfullt tillagat av <a
+                        href="https://www.rosers.se" target="_blank" rel="noopener noreferrer">Rosers</a>, vilket skapar
+                    den
+                    perfekta julkänslan för dig och dina
+                    kollegor.<br /><br />
+
+                    ✨ Pris från 995 kr exkl. moms<br />
+                    📅 Boka er plats redan idag. Platserna är
+                    begränsade.<br /><br />
+
+                    För övriga frågor:<br />
+                    📧 bokning@karlsfors.se
+                </p>
+            </div>
+            <div
+                style="padding: 1rem; max-width: 400px; min-width: 380px; border: 1px solid rgba(0,0,0,0.25); border-radius: 12px;">
+                <appstract-form></appstract-form>
+            </div>
+        </div>
+        <div style="margin-top: 4rem; margin-bottom: 4rem;">
+            <h2>More content below</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque aliquam odio et faucibus.
+                Nulla rhoncus feugiat eros quis consectetur. Morbi neque ex, condimentum dapibus congue et, vulputate
+                ut ligula. Vestibulum sit amet urna turpis. Mauris euismod elit et nisi ultrices, ut faucibus orci
+                venenatis. Duis a dui fringilla, gravida lorem ac, semper magna. Aenean sed turpis a quam aliquet
+                fringilla a in odio. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
+                turpis egestas. In non pulvinar purus. Donec lacinia ante in blandit luctus. Nunc euismod augue at
+                erat facilisis, in mollis erat congue. Sed a convallis nulla. Nulla facilisi. Donec mattis ligula id
+                nunc suscipit, ut fermentum massa venenatis. Quisque id sodales libero.</p>
+        </div>
+    </div>
+    <footer>
+        <div style="padding: 1rem; border-top: 1px solid rgba(0,0,0,0.25);">
+            <p>Footer content goes here</p>
+        </div>
+    </footer>
+    <script>
+        // reference to the iframe
+        let iframe = null;
+
+        function initIframe(el) {
+            iframe = document.createElement('iframe');
+            iframe.src = "http://localhost:3000";
+            iframe.style.border = "0";
+            iframe.style.width = "100%";
+            iframe.height = "400"; // initial height
+            el.appendChild(iframe);
+        }
+
+        const el = document.getElementsByTagName("appstract-form");
+        if (el && el.length > 0) {
+            initIframe(el[0]);
+        }
+
+        window.addEventListener("message", (e) => {
+            const data = e.data;
+            if (data && data.appstract) {
+                const msg = data.message;
+                if (msg.type === "height" && iframe) {
+                    iframe.height = Math.max(msg.data, 0).toString();
+                    console.log("[Appstract] height set to:", iframe.height);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
