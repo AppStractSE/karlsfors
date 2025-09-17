@@ -6,6 +6,8 @@ function initializeIframe(el) {
   iframe.style.border = "0";
   iframe.style.width = "100%";
   iframe.height = "0";
+  iframe.style.transition = "height .1s ease";
+  iframe.classList.add("loading");
   el.appendChild(iframe);
 }
 
@@ -20,7 +22,12 @@ window.addEventListener("message", (e) => {
     const msg = data.message;
     if (msg.type === "height" && iframe) {
       iframe.height = Math.max(msg.data, 0).toString();
-      // console.log("[Appstract] height set to:", iframe.height);
+    }
+
+    if (msg.type === "loaded" && iframe) {
+      iframe.classList.remove("loading");
+      iframe.classList.add("loaded");
+      console.log("[Appstract] iframe loaded");
     }
   }
 });

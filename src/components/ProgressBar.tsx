@@ -16,7 +16,7 @@ const ProgressBar = ({ currentStep, totalSteps }: { currentStep: number; totalSt
     }
     return steps;
   };
-  return <div className="flex p-2 gap-2">{renderSteps()}</div>;
+  return <div className="flex gap-2">{renderSteps()}</div>;
 };
 
 export default ProgressBar;

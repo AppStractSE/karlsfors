@@ -4,4 +4,7 @@ export interface IContactForm {
   PhoneNumber: string;
   Service: string;
   Message: string;
+  Date: string;
+  Time: string;
+  NumberOfGuests: string;
 }

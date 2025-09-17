@@ -29,6 +29,9 @@ const BookingForm = () => {
       FullName: "",
       Email: "",
       PhoneNumber: "",
+      Date: "",
+      Time: "",
+      NumberOfGuests: "",
       Service: "",
       Message: "",
     },
@@ -37,7 +40,7 @@ const BookingForm = () => {
 
   function generateEmailHTML(data: IContactForm) {
     const formattedMessage = data.Message.replace(/\n/g, "<br>");
-    return `<div><p><strong>Namn:</strong></p><p>${data.FullName}</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${data.Email}</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${data.PhoneNumber}</a></p><p><strong>Intresserad av tjänst:</strong></p><p>${data.Service}</p><p><strong>Meddelande:</strong></p><p>${formattedMessage}</p></div>`;
+    return `<div><p><strong>Namn:</strong></p><p>${data.FullName}</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${data.Email}</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${data.PhoneNumber}</a></p><p><strong>Intresserad av tjänst:</strong></p><p>${data.Service}</p><p><strong>Datum:</strong></p><p>${data.Date}</p><p><strong>Tid:</strong></p><p>${data.Time}</p><p><strong>Antal gäster:</strong></p><p>${data.NumberOfGuests} st</p><p><strong>Meddelande:</strong></p><p>${formattedMessage}</p></div>`;
   }
 
   const onSubmit = async (data: IContactForm) => {
@@ -45,6 +48,10 @@ const BookingForm = () => {
       name: data.FullName,
       email: data.Email,
       service: data.Service,
+      phone: data.PhoneNumber,
+      date: data.Date,
+      time: data.Time,
+      numberOfGuests: data.NumberOfGuests,
       subject: `Kontaktformulär - ${data.FullName}`,
       message: data.Message,
       messageHtml: generateEmailHTML(data),
@@ -87,7 +94,7 @@ const BookingForm = () => {
   };
 
   const baseClasses =
-    "text-base w-full rounded-md p-2 border-primary/25 shadow-sm focus:outline-none border ring-0 focus:border-primary focus-visible:outline-offset-0 transition-all duration-500 ease-in-out";
+    "text-base w-full rounded p-2 border-primary/25 shadow-sm focus:outline-none border ring-0 focus:border-primary focus-visible:outline-offset-0 transition-all duration-500 ease-in-out";
 
   const errorClass = "border-red-500 placeholder:text-red-500";
   const errorTextBaseClass =
@@ -96,12 +103,12 @@ const BookingForm = () => {
   const errorTextVisibleClasses = "mt-0.5 opacity-100 max-h-full h-full";
 
   const bookingSlots: { date: Date; times: string[]; status: string }[] = [
-    { date: new Date(2025, 11, 3), times: ["18:00"], status: "green" }, // December = 11
-    { date: new Date(2025, 11, 4), times: ["18:00"], status: "yellow" },
+    { date: new Date(2025, 11, 3), times: ["18:00"], status: "green" },
+    { date: new Date(2025, 11, 4), times: ["18:00"], status: "green" },
     { date: new Date(2025, 11, 5), times: ["18:30"], status: "green" },
-    { date: new Date(2025, 11, 6), times: ["13:00"], status: "red" },
+    { date: new Date(2025, 11, 6), times: ["13:00"], status: "green" },
     { date: new Date(2025, 11, 10), times: ["18:00"], status: "green" },
-    { date: new Date(2025, 11, 11), times: ["18:00"], status: "yellow" },
+    { date: new Date(2025, 11, 11), times: ["18:00"], status: "green" },
     { date: new Date(2025, 11, 12), times: ["18:30"], status: "green" },
     { date: new Date(2025, 11, 13), times: ["13:00"], status: "green" },
   ];
@@ -114,7 +121,7 @@ const BookingForm = () => {
 
   const nextStep = async () => {
     if (step === 1) {
-      const isValid = await trigger("Message");
+      const isValid = (await trigger("Message")) && date && selectedTime && numberOfGuests;
       if (!isValid) return;
     }
     if (step < totalSteps) {
@@ -156,6 +163,7 @@ const BookingForm = () => {
                         type="button"
                         onClick={() => {
                           setNumberOfGuests(option);
+                          setValue("NumberOfGuests", option.toString(), { shouldValidate: true });
                           setShowMoreGuests(false);
                           setActiveAccordion("item-2");
                         }}
@@ -172,9 +180,11 @@ const BookingForm = () => {
                     <button
                       onClick={() => {
                         setShowMoreGuests(!showMoreGuests);
+                        const newVal = numberOfGuestsOptions[numberOfGuestsOptions.length - 1] + 1;
                         setNumberOfGuests(
                           numberOfGuestsOptions[numberOfGuestsOptions.length - 1] + 1,
                         );
+                        setValue("NumberOfGuests", newVal.toString(), { shouldValidate: true });
                       }}
                       className={twMerge(
                         "aspect-square w-[54px] h-[54px] rounded-md border flex justify-center items-center text-base",
@@ -187,27 +197,29 @@ const BookingForm = () => {
                     </button>
                   </div>
                   {showMoreGuests ? (
-                    <div className="flex items-center gap-2 p-2 border justify-between rounded-md mt-4">
+                    <div className="flex items-center gap-2 p-1 border justify-between rounded-md mt-4">
                       <button
-                        className="p-1"
+                        className="p-2 hover:bg-secondary/75 rounded-md"
                         onClick={() => {
                           if (numberOfGuests && numberOfGuests > 4) {
                             setNumberOfGuests((numberOfGuests ?? 1) - 1);
                           }
                         }}
                       >
-                        <Minus size={20} />
+                        <Minus size={18} />
                       </button>
                       <div className="text-base">{numberOfGuests}</div>
                       <button
-                        className="p-1"
+                        className="p-2 hover:bg-secondary/75 rounded-md"
                         onClick={() => {
                           if (numberOfGuests && numberOfGuests < 50) {
-                            setNumberOfGuests((numberOfGuests ?? 1) + 1);
+                            const newVal = (numberOfGuests ?? 1) + 1;
+                            setNumberOfGuests(newVal);
+                            setValue("NumberOfGuests", newVal.toString(), { shouldValidate: true });
                           }
                         }}
                       >
-                        <Plus size={20} />
+                        <Plus size={18} />
                       </button>
                     </div>
                   ) : null}
@@ -236,6 +248,16 @@ const BookingForm = () => {
                       setDate(date);
                       setSelectedTime(null);
                       setActiveAccordion("item-3");
+                      if (date) {
+                        setValue(
+                          "Date",
+                          `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+                            2,
+                            "0",
+                          )}-${String(date.getDate()).padStart(2, "0")}`,
+                          { shouldValidate: true },
+                        );
+                      }
                     }}
                     className="border"
                     captionLayout="label"
@@ -266,7 +288,10 @@ const BookingForm = () => {
                         }
                         type="button"
                         key={time}
-                        onClick={() => setSelectedTime(time)}
+                        onClick={() => {
+                          setSelectedTime(time);
+                          setValue("Time", time, { shouldValidate: true });
+                        }}
                         className={twMerge(
                           "px-4 py-2 rounded-full border inline-flex gap-2 items-center text-sm",
                           date && selectedTime === time
@@ -296,8 +321,8 @@ const BookingForm = () => {
         );
       case 2:
         return (
-          <div className="px-2 pb-2">
-            <div className="border-b pb-2 mb-4">
+          <div>
+            <div className="border-b pb-2 my-4">
               <div className="mb-2 flex items-center justify-between">
                 <div className="text-lg">Summering</div>
                 <button
@@ -327,7 +352,7 @@ const BookingForm = () => {
               </div>
             </div>
             <div className="flex flex-col gap-1 mb-4">
-              <label className="text-sm font-semibold" htmlFor="FullName">
+              <label className="text-sm" htmlFor="FullName">
                 För- och efternamn
               </label>
               <input
@@ -358,7 +383,7 @@ const BookingForm = () => {
 
             <div className="flex flex-col md:flex-row gap-x-4 gap-y-4 mb-4">
               <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm font-semibold" htmlFor="Email">
+                <label className="text-sm" htmlFor="Email">
                   E-postadress
                 </label>
                 <input
@@ -384,7 +409,7 @@ const BookingForm = () => {
               </div>
 
               <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm font-semibold" htmlFor="PhoneNumber">
+                <label className="text-sm" htmlFor="PhoneNumber">
                   Telefonnummer
                 </label>
                 <input
@@ -422,7 +447,7 @@ const BookingForm = () => {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-semibold" htmlFor="Message">
+              <label className="text-sm" htmlFor="Message">
                 Meddelande
               </label>
               <textarea
@@ -489,15 +514,6 @@ const BookingForm = () => {
   return (
     <div className="relative">
       <ProgressBar currentStep={step} totalSteps={totalSteps} />
-      {/* {step > 1 && (
-        <button
-          className="inline-flex w-fit items-center text-sm text-primary/75 hover:text-primary"
-          onClick={prevStep}
-        >
-          <ChevronLeft size={18} />
-          Gå tillbaka
-        </button>
-      )} */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mx-auto flex flex-col gap-3"
@@ -507,7 +523,8 @@ const BookingForm = () => {
         {renderStepContent()}
         {step < totalSteps && (
           <button
-            className="inline-flex w-full items-center justify-center py-2.5 bg-foreground text-background hover:bg-foreground/90 rounded-full"
+            disabled={date && selectedTime && numberOfGuests ? false : true}
+            className="inline-flex w-full items-center justify-center py-2.5 bg-foreground text-background hover:bg-foreground/90 rounded-full disabled:opacity-50"
             onClick={nextStep}
           >
             Reservera

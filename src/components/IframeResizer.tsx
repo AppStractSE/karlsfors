@@ -16,7 +16,10 @@ export default function IframeResizer({ children }: { children: React.ReactNode 
       );
     };
 
-    sendHeight(); // initial
+    sendHeight(); // Send initial height
+
+    // Send "loaded" message
+    window.parent.postMessage({ appstract: true, message: { type: "loaded" } }, "*");
 
     const resizeObserver = new ResizeObserver(sendHeight);
     resizeObserver.observe(resizeRef.current);
