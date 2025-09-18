@@ -176,6 +176,7 @@ const BookingForm = () => {
                   {showMoreGuests ? (
                     <div className="flex items-center gap-2 p-1 border justify-between rounded-md mt-4">
                       <button
+                        type="button"
                         className="p-2 hover:bg-secondary/75 rounded-md"
                         onClick={() => {
                           if (numberOfGuests && numberOfGuests > 4) {
@@ -187,6 +188,7 @@ const BookingForm = () => {
                       </button>
                       <div className="text-base">{numberOfGuests}</div>
                       <button
+                        type="button"
                         className="p-2 hover:bg-secondary/75 rounded-md"
                         onClick={() => {
                           if (numberOfGuests && numberOfGuests < 50) {
