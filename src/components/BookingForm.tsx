@@ -60,34 +60,38 @@ const BookingForm = () => {
   }
 
   const onSubmit = async (data: IContactForm) => {
-    const formData = {
-      name: data.FullName,
-      email: data.Email,
-      business: data.Business,
-      phone: data.PhoneNumber,
-      date: data.Date,
-      time: data.Time,
-      numberOfGuests: data.NumberOfGuests,
-      subject: `JULBORDSRESERVATION - ${data.FullName}`,
-      message: data.Message,
-      messageHtml: generateEmailHTML(data),
-    };
-    console.log(formData, "formData is to be posted");
+    try {
+      const formData = {
+        name: data.FullName,
+        email: data.Email,
+        business: data.Business,
+        phone: data.PhoneNumber,
+        date: data.Date,
+        time: data.Time,
+        numberOfGuests: data.NumberOfGuests,
+        subject: `JULBORDSRESERVATION - ${data.FullName}`,
+        message: data.Message,
+        messageHtml: generateEmailHTML(data),
+      };
 
-    await fetch("/api/contact-form", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .catch((error) => {
-        console.log(error.message);
-      })
-      .then(() => {
-        console.log("Form submitted successfully");
-        setFormSubmitted(true);
+      console.log(formData, "formData is to be posted");
+
+      const res = await fetch("/api/contact-form", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
+
+      if (!res.ok) {
+        throw new Error(`Failed: ${res.statusText}`);
+      }
+
+      console.log("Form submitted successfully");
+      setFormSubmitted(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Submit failed:", error.message);
+    }
   };
 
   const baseClasses =
