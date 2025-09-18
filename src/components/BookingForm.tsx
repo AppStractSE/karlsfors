@@ -155,6 +155,7 @@ const BookingForm = () => {
                       </button>
                     ))}
                     <button
+                      type="button"
                       onClick={() => {
                         setShowMoreGuests(!showMoreGuests);
                         const newVal = numberOfGuestsOptions[numberOfGuestsOptions.length - 1] + 1;
