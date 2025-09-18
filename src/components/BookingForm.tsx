@@ -16,6 +16,22 @@ import Spinner from "./Spinner";
 
 const BookingForm = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [numberOfGuests, setNumberOfGuests] = useState<number | undefined>(undefined);
+  const [step, setStep] = useState(1);
+  const bookingSlots: { date: Date; times: string[]; status: string }[] = [
+    { date: new Date(2025, 11, 3), times: ["18:00"], status: "green" },
+    { date: new Date(2025, 11, 4), times: ["18:00"], status: "green" },
+    { date: new Date(2025, 11, 5), times: ["18:30"], status: "green" },
+    { date: new Date(2025, 11, 6), times: ["13:00"], status: "green" },
+    { date: new Date(2025, 11, 10), times: ["18:00"], status: "green" },
+    { date: new Date(2025, 11, 11), times: ["18:00"], status: "green" },
+    { date: new Date(2025, 11, 12), times: ["18:30"], status: "green" },
+    { date: new Date(2025, 11, 13), times: ["13:00"], status: "green" },
+  ];
+  const numberOfGuestsOptions = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+  const totalSteps = 2;
   const {
     register,
     handleSubmit,
@@ -32,7 +48,7 @@ const BookingForm = () => {
       Date: "",
       Time: "",
       NumberOfGuests: "",
-      Service: "",
+      Business: "",
       Message: "",
     },
     mode: "onTouched",
@@ -40,57 +56,52 @@ const BookingForm = () => {
 
   function generateEmailHTML(data: IContactForm) {
     const formattedMessage = data.Message.replace(/\n/g, "<br>");
-    return `<div><p><strong>Namn:</strong></p><p>${data.FullName}</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${data.Email}</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${data.PhoneNumber}</a></p><p><strong>Intresserad av tjänst:</strong></p><p>${data.Service}</p><p><strong>Datum:</strong></p><p>${data.Date}</p><p><strong>Tid:</strong></p><p>${data.Time}</p><p><strong>Antal gäster:</strong></p><p>${data.NumberOfGuests} st</p><p><strong>Meddelande:</strong></p><p>${formattedMessage}</p></div>`;
+    return `<div><p><strong>Namn:</strong></p><p>${
+      data.FullName
+    }</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${
+      data.Email
+    }</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${
+      data.PhoneNumber
+    }</a></p><p><strong>Företag:</strong></p><p>${
+      data.Business
+    }</p><p><strong>Datum:</strong></p><p>${data.Date}</p><p><strong>Tid:</strong></p><p>${
+      data.Time
+    }</p><p><strong>Antal gäster:</strong></p><p>${data.NumberOfGuests} st</p>${
+      formattedMessage
+        ? `<p><strong>Kommentar, allergier eller annat:</strong></p><p>${formattedMessage}</p>`
+        : ""
+    }</div>`;
   }
 
   const onSubmit = async (data: IContactForm) => {
     const formData = {
       name: data.FullName,
       email: data.Email,
-      service: data.Service,
+      business: data.Business,
       phone: data.PhoneNumber,
       date: data.Date,
       time: data.Time,
       numberOfGuests: data.NumberOfGuests,
-      subject: `Kontaktformulär - ${data.FullName}`,
+      subject: `JULBORDSRESERVATION - ${data.FullName}`,
       message: data.Message,
       messageHtml: generateEmailHTML(data),
     };
-    console.log(formData, "formData to be posted");
-    // toast
-    //   .promise(
-    //     fetch("/api/contact-form", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(formData),
-    //     }),
-    //     {
-    //       loading: "Skickar meddelande...",
-    //       success: "Meddelande skickat!",
-    //       error: "Ett fel uppstod.",
-    //     },
-    //     {
-    //       style: {
-    //         minWidth: "250px",
-    //       },
-    //       position: "bottom-center",
-    //       className: "!bg-primary !text-background",
-    //       success: {
-    //         duration: 8000,
-    //       },
-    //     },
-    //   )
-    //   .catch((error) => {
-    //     console.log(error.message);
-    //   })
-    //   .then(() => {
-    //     setFormSubmitted(true);
-    //     setTimeout(() => {
-    //       reset();
-    //     }, 250);
-    //   });
+    console.log(formData, "formData is to be posted");
+
+    fetch("/api/contact-form", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .catch((error) => {
+        console.log(error.message);
+      })
+      .then(() => {
+        console.log("Form submitted successfully");
+        setFormSubmitted(true);
+      });
   };
 
   const baseClasses =
@@ -102,23 +113,6 @@ const BookingForm = () => {
   const errorTextHiddenClasses = "opacity-0 max-h-0 h-0 ";
   const errorTextVisibleClasses = "mt-0.5 opacity-100 max-h-full h-full";
 
-  const bookingSlots: { date: Date; times: string[]; status: string }[] = [
-    { date: new Date(2025, 11, 3), times: ["18:00"], status: "green" },
-    { date: new Date(2025, 11, 4), times: ["18:00"], status: "green" },
-    { date: new Date(2025, 11, 5), times: ["18:30"], status: "green" },
-    { date: new Date(2025, 11, 6), times: ["13:00"], status: "green" },
-    { date: new Date(2025, 11, 10), times: ["18:00"], status: "green" },
-    { date: new Date(2025, 11, 11), times: ["18:00"], status: "green" },
-    { date: new Date(2025, 11, 12), times: ["18:30"], status: "green" },
-    { date: new Date(2025, 11, 13), times: ["13:00"], status: "green" },
-  ];
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [numberOfGuests, setNumberOfGuests] = useState<number | undefined>(undefined);
-  const numberOfGuestsOptions = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-  const [step, setStep] = useState(1);
-  const totalSteps = 2;
-
   const nextStep = async () => {
     if (step === 1) {
       const isValid = (await trigger("Message")) && date && selectedTime && numberOfGuests;
@@ -128,13 +122,6 @@ const BookingForm = () => {
       setStep(step + 1);
     }
   };
-
-  const prevStep = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    }
-  };
-
   const [activeAccordion, setActiveAccordion] = useState("item-1");
   const [showMoreGuests, setShowMoreGuests] = useState(false);
   const renderStepContent = () => {
@@ -353,7 +340,7 @@ const BookingForm = () => {
             </div>
             <div className="flex flex-col gap-1 mb-4">
               <label className="text-sm" htmlFor="FullName">
-                För- och efternamn
+                För- och efternamn*
               </label>
               <input
                 className={twMerge(baseClasses, errors["FullName"] ? errorClass : "")}
@@ -380,11 +367,10 @@ const BookingForm = () => {
                 {errors.FullName?.message}
               </p>
             </div>
-
             <div className="flex flex-col md:flex-row gap-x-4 gap-y-4 mb-4">
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-sm" htmlFor="Email">
-                  E-postadress
+                  E-postadress*
                 </label>
                 <input
                   className={twMerge(baseClasses, errors["Email"] ? errorClass : "")}
@@ -410,7 +396,7 @@ const BookingForm = () => {
 
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-sm" htmlFor="PhoneNumber">
-                  Telefonnummer
+                  Telefonnummer*
                 </label>
                 <input
                   className={twMerge(baseClasses, errors["PhoneNumber"] ? errorClass : "")}
@@ -445,10 +431,38 @@ const BookingForm = () => {
                 </p>
               </div>
             </div>
-
+            <div className="flex flex-col gap-1 mb-4">
+              <label className="text-sm" htmlFor="Business">
+                Företagsnamn*
+              </label>
+              <input
+                className={twMerge(baseClasses, errors["Business"] ? errorClass : "")}
+                type="text"
+                {...register("Business", {
+                  required: "Fyll i företagsnamn",
+                  minLength: {
+                    value: 2,
+                    message: "Minst 2 tecken",
+                  },
+                  maxLength: {
+                    value: 50,
+                    message: "Max 50 tecken",
+                  },
+                })}
+              />
+              <p
+                role="alert"
+                className={twMerge(
+                  errorTextBaseClass,
+                  errors["Business"] ? errorTextVisibleClasses : errorTextHiddenClasses,
+                )}
+              >
+                {errors.Business?.message}
+              </p>
+            </div>
             <div className="flex flex-col gap-1">
               <label className="text-sm" htmlFor="Message">
-                Meddelande
+                Kommentar, allergier eller annat <span className="text-gray-500">(valfritt)</span>
               </label>
               <textarea
                 maxLength={500}
@@ -458,11 +472,6 @@ const BookingForm = () => {
                   errors["Message"] ? errorClass : "",
                 )}
                 {...register("Message", {
-                  required: "Fyll i meddelande",
-                  minLength: {
-                    value: 10,
-                    message: "Minst 10 tecken",
-                  },
                   maxLength: {
                     value: 500,
                     message: "Max 500 tecken",
@@ -513,86 +522,89 @@ const BookingForm = () => {
 
   return (
     <div className="relative">
-      <ProgressBar currentStep={step} totalSteps={totalSteps} />
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="mx-auto flex flex-col gap-3"
-        name="contact-form"
-      >
-        <input type="hidden" name="required-field" value="contact-form" />
-        {renderStepContent()}
-        {step < totalSteps && (
-          <button
-            disabled={date && selectedTime && numberOfGuests ? false : true}
-            className="inline-flex w-full items-center justify-center py-2.5 bg-foreground text-background hover:bg-foreground/90 rounded-full disabled:opacity-50"
-            onClick={nextStep}
-          >
-            Reservera
-          </button>
-        )}
-        {step === totalSteps && (
-          <button
-            disabled={isSubmitting || formSubmitted}
-            type="submit"
-            className="inline-flex w-full items-center justify-center py-2.5 bg-foreground text-background hover:bg-foreground/90 rounded-full"
-          >
-            {isSubmitting ? (
-              <Spinner
-                primaryColor="text-primary"
-                secondaryColor="text-background"
-                strokeWidth={4}
-                height={24}
-                width={24}
-              />
-            ) : (
-              "Skicka"
-            )}
-          </button>
-        )}
+      {!formSubmitted ? <ProgressBar currentStep={step} totalSteps={2} /> : null}
 
-        {/* <button
-          disabled={isSubmitting || formSubmitted}
-          type="submit"
-          className="inline-flex w-full items-center justify-center py-2.5 bg-foreground text-background hover:bg-foreground/90 rounded-full"
-        >
-          {isSubmitting ? (
-            <Spinner
-              primaryColor="text-primary"
-              secondaryColor="text-background"
-              strokeWidth={4}
-              height={24}
-              width={24}
-            />
-          ) : (
-            "Skicka"
-          )}
-        </button> */}
-      </form>
-
-      {/* <div
-        className={twMerge(
-          "absolute inset-0 left-0 top-0 -m-2 overflow-hidden backdrop-blur-sm transition-all delay-75 duration-500 ease-in-out lg:backdrop-blur-sm",
-          formSubmitted ? "visible opacity-100" : "invisible opacity-0",
-        )}
-      >
-        <div
-          className={twMerge(
-            "flex h-full transform flex-col items-center justify-center space-y-4 transition-all duration-500 ease-in-out",
-            formSubmitted ? "translate-y-0" : "translate-y-[125%]",
-          )}
-        >
-          <h6 className="text-2xl md:text-3xl lg:text-center">Meddelande skickat!</h6>
-          <p className="whitespace-pre-line text-balance text-xl lg:text-center lg:text-xl">
-            Tack! Vi återkopplar så fort vi kan.
-          </p>
+      {formSubmitted ? (
+        <div className="text-center flex flex-col gap-8">
+          <div className="flex flex-col gap-2">
+            <h6 className="text-2xl md:text-3xl">Tack!</h6>
+            <p className="whitespace-pre-line text-balance text-xl">Din bokning är mottagen.</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="text-base">Du har bokat</div>
+            <div className="flex gap-4 justify-center">
+              <div className="inline-flex items-center gap-2 text-sm">
+                <ForkKnife size={18} />
+                {numberOfGuests}
+              </div>
+              <div className="inline-flex items-center gap-2 text-sm">
+                <LucideCalendar size={18} />
+                {date?.toLocaleDateString("sv-SE", {
+                  month: "long",
+                  day: "numeric",
+                  weekday: "short",
+                })}
+              </div>
+              <div className="inline-flex items-center gap-2 text-sm">
+                <Timer size={18} />
+                {selectedTime}
+              </div>
+            </div>
+          </div>
+          <p className="text-sm">Vid frågor kommer vi att kontakta dig på {watch("Email")}</p>
+          <p className="text-xs">Har du frågor? Tveka inte på att ringa eller mejla oss.</p>
           <button
-            onClick={() => setFormSubmitted(false)}
-            className="inline-block rounded-md bg-primary p-2 px-4 text-center text-xs text-background transition-all duration-200 ease-in-out"
+            onClick={() => {
+              setFormSubmitted(false);
+              reset();
+              setDate(undefined);
+              setSelectedTime(null);
+              setNumberOfGuests(undefined);
+              setStep(1);
+            }}
+            className="inline-flex w-full items-center justify-center py-2.5 bg-foreground text-background hover:bg-foreground/90 rounded-full disabled:opacity-50 cursor:pointer"
           >
-            Stäng
+            Klar
           </button>
         </div>
-      </div> */}
+      ) : (
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mx-auto flex flex-col gap-3"
+          name="contact-form"
+        >
+          <input type="hidden" name="required-field" value="contact-form" />
+          {renderStepContent()}
+          {step < 2 && (
+            <button
+              disabled={date && selectedTime && numberOfGuests ? false : true}
+              className="inline-flex w-full items-center justify-center py-2.5 bg-foreground text-background hover:bg-foreground/90 rounded-full disabled:opacity-50"
+              onClick={nextStep}
+            >
+              Reservera
+            </button>
+          )}
+          {step === 2 && (
+            <button
+              disabled={isSubmitting || formSubmitted}
+              type="submit"
+              className="inline-flex w-full items-center justify-center py-2.5 bg-foreground text-background hover:bg-foreground/90 rounded-full"
+            >
+              {isSubmitting ? (
+                <Spinner
+                  primaryColor="text-primary"
+                  secondaryColor="text-background"
+                  strokeWidth={4}
+                  height={24}
+                  width={24}
+                />
+              ) : (
+                "Skicka"
+              )}
+            </button>
+          )}
+        </form>
+      )}
     </div>
   );
 };
