@@ -56,21 +56,7 @@ const BookingForm = () => {
 
   function generateEmailHTML(data: IContactForm) {
     const formattedMessage = data.Message.replace(/\n/g, "<br>");
-    return `<div><p><strong>Namn:</strong></p><p>${
-      data.FullName
-    }</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${
-      data.Email
-    }</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${
-      data.PhoneNumber
-    }</a></p><p><strong>Företag:</strong></p><p>${
-      data.Business
-    }</p><p><strong>Datum:</strong></p><p>${data.Date}</p><p><strong>Tid:</strong></p><p>${
-      data.Time
-    }</p><p><strong>Antal gäster:</strong></p><p>${data.NumberOfGuests} st</p>${
-      formattedMessage
-        ? `<p><strong>Kommentar, allergier eller annat:</strong></p><p>${formattedMessage}</p>`
-        : ""
-    }</div>`;
+    return `<div><p><strong>Namn:</strong></p><p>${data.FullName}</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${data.Email}</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${data.PhoneNumber}</a></p><p><strong>Företag:</strong></p><p>${data.Business}</p><p><strong>Datum:</strong></p><p>${data.Date}</p><p><strong>Tid:</strong></p><p>${data.Time}</p><p><strong>Antal gäster:</strong></p><p>${data.NumberOfGuests} st</p>${formattedMessage ? `<p><strong>Kommentar, allergier eller annat:</strong></p><p>${formattedMessage}</p>` : ""}</div>`;
   }
 
   const onSubmit = async (data: IContactForm) => {
