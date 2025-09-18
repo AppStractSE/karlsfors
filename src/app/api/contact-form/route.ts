@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, data: {} });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Error in API route:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
