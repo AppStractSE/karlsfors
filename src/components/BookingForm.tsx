@@ -74,7 +74,7 @@ const BookingForm = () => {
     };
     console.log(formData, "formData is to be posted");
 
-    fetch("/api/contact-form", {
+    await fetch("/api/contact-form", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const BookingForm = () => {
 
   const nextStep = async () => {
     if (step === 1) {
-      const isValid = (await trigger("Message")) && date && selectedTime && numberOfGuests;
+      const isValid = date && selectedTime && numberOfGuests;
       if (!isValid) return;
     }
     if (step < totalSteps) {
