@@ -225,19 +225,21 @@ const BookingForm = () => {
                     mode="single"
                     selected={date}
                     onSelect={(date) => {
+                      if (date === undefined || date === null) {
+                        setActiveAccordion("item-3");
+                        return;
+                      }
                       setDate(date);
                       setSelectedTime(null);
                       setActiveAccordion("item-3");
-                      if (date) {
-                        setValue(
-                          "Date",
-                          `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-                            2,
-                            "0",
-                          )}-${String(date.getDate()).padStart(2, "0")}`,
-                          { shouldValidate: true },
-                        );
-                      }
+                      setValue(
+                        "Date",
+                        `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+                          2,
+                          "0",
+                        )}-${String(date.getDate()).padStart(2, "0")}`,
+                        { shouldValidate: true },
+                      );
                     }}
                     className="border"
                     captionLayout="label"
@@ -251,8 +253,8 @@ const BookingForm = () => {
                   />
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger>
+              <AccordionItem value="item-3" disabled={!date}>
+                <AccordionTrigger disabled={!date}>
                   <label className="text-base inline-flex items-center gap-2" htmlFor="time">
                     <Timer size={20} />
                     {selectedTime ? selectedTime : "Välj tid"}
@@ -260,39 +262,40 @@ const BookingForm = () => {
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="flex flex-wrap gap-2">
-                    {getTimesForDate(date).map((time) => (
-                      <button
-                        disabled={
-                          date &&
-                          bookingSlots.find((s) => isSameDay(s.date, date))?.status === "red"
-                        }
-                        type="button"
-                        key={time}
-                        onClick={() => {
-                          setSelectedTime(time);
-                          setValue("Time", time, { shouldValidate: true });
-                        }}
-                        className={twMerge(
-                          "px-4 py-2 rounded-full border inline-flex gap-2 items-center text-sm",
-                          date && selectedTime === time
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-background text-foreground border-primary/25 hover:border-primary",
-                          date &&
-                            bookingSlots.find((s) => isSameDay(s.date, date))?.status === "red" &&
-                            "opacity-50 cursor-not-allowed",
-                        )}
-                      >
-                        <span
-                          className={`block rounded-full`}
-                          style={{
-                            backgroundColor: getStatusColor(date),
-                            height: "8px",
-                            width: "8px",
+                    {date &&
+                      getTimesForDate(date).map((time) => (
+                        <button
+                          disabled={
+                            date &&
+                            bookingSlots.find((s) => isSameDay(s.date, date))?.status === "red"
+                          }
+                          type="button"
+                          key={time}
+                          onClick={() => {
+                            setSelectedTime(time);
+                            setValue("Time", time, { shouldValidate: true });
                           }}
-                        ></span>
-                        {time}
-                      </button>
-                    ))}
+                          className={twMerge(
+                            "px-4 py-2 rounded-full border inline-flex gap-2 items-center text-sm",
+                            date && selectedTime === time
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-background text-foreground border-primary/25 hover:border-primary",
+                            date &&
+                              bookingSlots.find((s) => isSameDay(s.date, date))?.status === "red" &&
+                              "opacity-50 cursor-not-allowed",
+                          )}
+                        >
+                          <span
+                            className={`block rounded-full`}
+                            style={{
+                              backgroundColor: getStatusColor(date),
+                              height: "8px",
+                              width: "8px",
+                            }}
+                          ></span>
+                          {time}
+                        </button>
+                      ))}
                   </div>
                 </AccordionContent>
               </AccordionItem>
