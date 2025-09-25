@@ -31,7 +31,6 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify(formData),
     });
-    console.log("externalResponseStatus", externalResponse.status);
     if (!externalResponse.status.toString().startsWith("2")) {
       throw new Error(`Failed to send: ${externalResponse.statusText}`);
     }

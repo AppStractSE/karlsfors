@@ -74,8 +74,6 @@ const BookingForm = () => {
         messageHtml: generateEmailHTML(data),
       };
 
-      console.log(formData, "formData is to be posted");
-
       const res = await fetch("/api/contact-form", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -145,7 +143,7 @@ const BookingForm = () => {
                           setActiveAccordion("item-2");
                         }}
                         className={twMerge(
-                          "aspect-square w-[54px] h-[54px] rounded-md border flex justify-center items-center text-base",
+                          "aspect-square w-[50px] h-[50px] rounded-md border flex justify-center items-center text-base",
                           numberOfGuests === option
                             ? "bg-primary text-primary-foreground border-primary"
                             : "bg-background text-foreground border-primary/25 hover:border-primary",
@@ -165,7 +163,7 @@ const BookingForm = () => {
                         setValue("NumberOfGuests", newVal.toString(), { shouldValidate: true });
                       }}
                       className={twMerge(
-                        "aspect-square w-[54px] h-[54px] rounded-md border flex justify-center items-center text-base",
+                        "aspect-square w-[50px] h-[50px] rounded-md border flex justify-center items-center text-base",
                         showMoreGuests
                           ? "bg-primary text-primary-foreground border-primary"
                           : "bg-background text-foreground border-primary/25 hover:border-primary",
