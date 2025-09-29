@@ -27,5 +27,9 @@ export default function IframeResizer({ children }: { children: React.ReactNode 
     return () => resizeObserver.disconnect();
   }, []);
 
-  return <div ref={resizeRef}>{children}</div>;
+  return (
+    <div ref={resizeRef} className="w-[calc(100%-1px)]">
+      {children}
+    </div>
+  );
 }

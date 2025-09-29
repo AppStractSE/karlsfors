@@ -38,7 +38,6 @@ const BookingForm = () => {
     reset,
     setValue,
     watch,
-    trigger,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -49,7 +48,9 @@ const BookingForm = () => {
       Time: "",
       NumberOfGuests: "",
       Business: "",
-      BusinessInfo: "",
+      OrgNumber: "",
+      InvoiceAddress: "",
+      BusinessAddress: "",
       Message: "",
     },
     mode: "onTouched",
@@ -57,22 +58,56 @@ const BookingForm = () => {
 
   function generateEmailHTML(data: IContactForm) {
     const formattedMessage = data.Message.replace(/\n/g, "<br>");
-    const formattedBusinessInfo = data.BusinessInfo.replace(/\n/g, "<br>");
-    return `<div><p><strong>Namn:</strong></p><p>${data.FullName}</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${data.Email}</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${data.PhoneNumber}</a></p><p><strong>Företag:</strong></p><p>${data.Business}</p><p><strong>Faktureringsinformation:</strong></p><p>${formattedBusinessInfo}</p><p><strong>Önskat datum:</strong></p><p>${data.Date}</p><p><strong>Tid:</strong></p><p>${data.Time}</p><p><strong>Antal gäster:</strong></p><p>${data.NumberOfGuests} st</p>${formattedMessage ? `<p><strong>Kommentar, allergier eller annat:</strong></p><p>${formattedMessage}</p>` : ""}</div>`;
+    const stringifiedDate = new Date(data.Date).toLocaleString("sv-SE", {
+      month: "long",
+      day: "numeric",
+      weekday: "long",
+    });
+    const formattedDate = stringifiedDate.charAt(0).toUpperCase() + stringifiedDate.slice(1);
+
+    return `<div><p><strong>Namn:</strong></p><p>${
+      data.FullName
+    }</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${
+      data.Email
+    }</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${
+      data.PhoneNumber
+    }</a></p>
+    <p><strong>Önskat datum:</strong></p>
+    <p>${formattedDate}</p><p><strong>Tid:</strong></p><p>${
+      data.Time
+    }</p><p><strong>Antal gäster:</strong></p><p>${data.NumberOfGuests} st</p>
+    <p><strong>Företag:</strong></p><p>${
+      data.Business
+    }</p><p><strong>Organisationsnummer:</strong></p><p>${
+      data.OrgNumber
+    }</p><p><strong>Faktureringsadress:</strong></p><p>${
+      data.InvoiceAddress
+    }</p><p><strong>Företagsadress:</strong></p><p>${data.BusinessAddress}</p>
+    ${
+      formattedMessage
+        ? `<p><strong>Kommentar, allergier eller annat:</strong></p><p>${formattedMessage}</p>`
+        : ""
+    }</div>`;
   }
 
   const onSubmit = async (data: IContactForm) => {
+    const shortDate = new Date(data.Date).toLocaleDateString("sv-SE", {
+      month: "2-digit",
+      day: "2-digit",
+    });
     try {
       const formData = {
         name: data.FullName,
         email: data.Email,
         business: data.Business,
-        businessInfo: data.BusinessInfo,
         phone: data.PhoneNumber,
         date: data.Date,
         time: data.Time,
         numberOfGuests: data.NumberOfGuests,
-        subject: `JULBORDSRESERVATION - ${data.FullName}`,
+        orgNumber: data.OrgNumber,
+        invoiceAddress: data.InvoiceAddress,
+        businessAddress: data.BusinessAddress,
+        subject: `JULBORDSRESERVATION - ${shortDate} - ${data.FullName}`,
         message: data.Message,
         messageHtml: generateEmailHTML(data),
       };
@@ -96,7 +131,7 @@ const BookingForm = () => {
   };
 
   const baseClasses =
-    "text-base w-full rounded p-2 border-primary/25 shadow-sm focus:outline-none border ring-0 focus:border-primary focus-visible:outline-offset-0 transition-all duration-500 ease-in-out";
+    "text-base w-full bg-white rounded p-2 border-primary/25 shadow-sm focus:outline-none border ring-0 focus:border-primary focus-visible:outline-offset-0 transition-all duration-500 ease-in-out";
 
   const errorClass = "border-red-500 placeholder:text-red-500";
   const errorTextBaseClass =
@@ -316,7 +351,7 @@ const BookingForm = () => {
                   ändra
                 </button>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 flex-wrap">
                 <div className="inline-flex items-center gap-2 text-sm">
                   <ForkKnife size={18} />
                   {numberOfGuests}
@@ -336,7 +371,7 @@ const BookingForm = () => {
               </div>
             </div>
             <div className="flex flex-col gap-1 mb-4">
-              <label className="text-sm" htmlFor="FullName">
+              <label className="text-xs" htmlFor="FullName">
                 För- och efternamn*
               </label>
               <input
@@ -364,9 +399,9 @@ const BookingForm = () => {
                 {errors.FullName?.message}
               </p>
             </div>
-            <div className="flex flex-col md:flex-row gap-x-4 gap-y-4 mb-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm" htmlFor="Email">
+                <label className="text-xs" htmlFor="Email">
                   E-postadress*
                 </label>
                 <input
@@ -390,14 +425,14 @@ const BookingForm = () => {
                   {errors.Email?.message}
                 </p>
               </div>
-
               <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm" htmlFor="PhoneNumber">
+                <label className="text-xs" htmlFor="PhoneNumber">
                   Telefonnummer*
                 </label>
                 <input
                   className={twMerge(baseClasses, errors["PhoneNumber"] ? errorClass : "")}
                   type="tel"
+                  placeholder="0701234567"
                   {...register("PhoneNumber", {
                     onChange: (e) => {
                       e.target.value = e.target.value.replace(/[^0-9]/g, "");
@@ -428,67 +463,103 @@ const BookingForm = () => {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col gap-1 mb-4">
-              <label className="text-sm" htmlFor="Business">
-                Företagsnamn*
-              </label>
-              <input
-                className={twMerge(baseClasses, errors["Business"] ? errorClass : "")}
-                type="text"
-                {...register("Business", {
-                  required: "Fyll i företagsnamn",
-                  minLength: {
-                    value: 2,
-                    message: "Minst 2 tecken",
-                  },
-                  maxLength: {
-                    value: 50,
-                    message: "Max 50 tecken",
-                  },
-                })}
-              />
-              <p
-                role="alert"
-                className={twMerge(
-                  errorTextBaseClass,
-                  errors["Business"] ? errorTextVisibleClasses : errorTextHiddenClasses,
-                )}
-              >
-                {errors.Business?.message}
-              </p>
+            <div className="border-b my-6"></div>
+            <div className="flex flex-col sm:flex-row gap-4 mb-4">
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-xs" htmlFor="Business">
+                  Företagsnamn*
+                </label>
+                <input
+                  className={twMerge(baseClasses, errors["Business"] ? errorClass : "")}
+                  type="text"
+                  {...register("Business", {
+                    required: "Fyll i företagsnamn",
+                  })}
+                />
+                <p
+                  role="alert"
+                  className={twMerge(
+                    errorTextBaseClass,
+                    errors["Business"] ? errorTextVisibleClasses : errorTextHiddenClasses,
+                  )}
+                >
+                  {errors.Business?.message}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-xs" htmlFor="OrgNumber">
+                  Organisationsnummer*
+                </label>
+                <input
+                  className={twMerge(baseClasses, errors["OrgNumber"] ? errorClass : "")}
+                  type="text"
+                  placeholder="123456-7890"
+                  {...register("OrgNumber", {
+                    required: "Fyll i organisationsnummer",
+                    pattern: {
+                      value: /^\d{6}-?\d{4}$/,
+                      message: "Ogiltigt organisationsnummer",
+                    },
+                  })}
+                />
+                <p
+                  role="alert"
+                  className={twMerge(
+                    errorTextBaseClass,
+                    errors["OrgNumber"] ? errorTextVisibleClasses : errorTextHiddenClasses,
+                  )}
+                >
+                  {errors.OrgNumber?.message}
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col gap-1 mb-4">
-              <label className="text-sm" htmlFor="BusinessInfo">
-                Faktureringsuppgifter*{" "}
-                <span className="text-gray-500">(Ex. org.nr, fakturaadress och referens)</span>
-              </label>
-              <textarea
-                maxLength={1000}
-                className={twMerge(
-                  "h-64 resize-none whitespace-pre-line",
-                  baseClasses,
-                  errors["BusinessInfo"] ? errorClass : "",
-                )}
-                {...register("BusinessInfo", {
-                  required: "Fyll i faktureringsuppgifter",
-                  maxLength: {
-                    value: 1000,
-                    message: "Max 1000 tecken",
-                  },
-                })}
-              ></textarea>
-              <p
-                role="alert"
-                className={twMerge(
-                  errorTextBaseClass,
-                  errors["BusinessInfo"] ? errorTextVisibleClasses : errorTextHiddenClasses,
-                )}
-              >
-                {errors.BusinessInfo?.message}
-              </p>
+            <div className="flex flex-col sm:flex-row gap-4 mb-4">
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-xs" htmlFor="BusinessAddress">
+                  Företagsadress*
+                </label>
+                <input
+                  className={twMerge(baseClasses, errors["BusinessAddress"] ? errorClass : "")}
+                  type="text"
+                  {...register("BusinessAddress", {
+                    required: "Fyll i företagsadress",
+                  })}
+                />
+                <p
+                  role="alert"
+                  className={twMerge(
+                    errorTextBaseClass,
+                    errors["BusinessAddress"] ? errorTextVisibleClasses : errorTextHiddenClasses,
+                  )}
+                >
+                  {errors.BusinessAddress?.message}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-xs" htmlFor="InvoiceAddress">
+                  Faktureringsadress*
+                </label>
+                <input
+                  className={twMerge(baseClasses, errors["InvoiceAddress"] ? errorClass : "")}
+                  type="text"
+                  {...register("InvoiceAddress", {
+                    required: "Fyll i faktureringsadress",
+                  })}
+                />
+                <p
+                  role="alert"
+                  className={twMerge(
+                    errorTextBaseClass,
+                    errors["InvoiceAddress"] ? errorTextVisibleClasses : errorTextHiddenClasses,
+                  )}
+                >
+                  {errors.InvoiceAddress?.message}
+                </p>
+              </div>
             </div>
+
             <div className="flex flex-col gap-1">
-              <label className="text-sm" htmlFor="Message">
+              <label className="text-xs" htmlFor="Message">
                 Kommentar, allergier eller annat <span className="text-gray-500">(valfritt)</span>
               </label>
               <textarea
