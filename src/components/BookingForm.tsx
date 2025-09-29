@@ -463,7 +463,7 @@ const BookingForm = () => {
                 </p>
               </div>
             </div>
-            <div className="border-b my-6"></div>
+            <div className="border-b my-4 md:my-6"></div>
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-xs" htmlFor="Business">
