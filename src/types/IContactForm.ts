@@ -3,6 +3,7 @@ export interface IContactForm {
   Email: string;
   PhoneNumber: string;
   Business: string;
+  BusinessInfo: string;
   Message: string;
   Date: string;
   Time: string;

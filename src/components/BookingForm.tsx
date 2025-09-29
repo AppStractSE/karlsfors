@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { Calendar } from "@/components/ui/calendar";
 import { IContactForm } from "@/types/IContactForm";
-import { ForkKnife, LucideCalendar, Minus, Plus, Timer } from "lucide-react";
+import { CheckCircle2, ForkKnife, LucideCalendar, Minus, Plus, Timer } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
@@ -49,6 +49,7 @@ const BookingForm = () => {
       Time: "",
       NumberOfGuests: "",
       Business: "",
+      BusinessInfo: "",
       Message: "",
     },
     mode: "onTouched",
@@ -56,7 +57,8 @@ const BookingForm = () => {
 
   function generateEmailHTML(data: IContactForm) {
     const formattedMessage = data.Message.replace(/\n/g, "<br>");
-    return `<div><p><strong>Namn:</strong></p><p>${data.FullName}</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${data.Email}</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${data.PhoneNumber}</a></p><p><strong>Företag:</strong></p><p>${data.Business}</p><p><strong>Datum:</strong></p><p>${data.Date}</p><p><strong>Tid:</strong></p><p>${data.Time}</p><p><strong>Antal gäster:</strong></p><p>${data.NumberOfGuests} st</p>${formattedMessage ? `<p><strong>Kommentar, allergier eller annat:</strong></p><p>${formattedMessage}</p>` : ""}</div>`;
+    const formattedBusinessInfo = data.BusinessInfo.replace(/\n/g, "<br>");
+    return `<div><p><strong>Namn:</strong></p><p>${data.FullName}</p><p><strong>Email:</strong></p><p><a href="mailto:${data.Email}">${data.Email}</a></p><p><strong>Telefon:</strong></p><p><a href="tel:${data.PhoneNumber}">${data.PhoneNumber}</a></p><p><strong>Företag:</strong></p><p>${data.Business}</p><p><strong>Faktureringsinformation:</strong></p><p>${formattedBusinessInfo}</p><p><strong>Önskat datum:</strong></p><p>${data.Date}</p><p><strong>Tid:</strong></p><p>${data.Time}</p><p><strong>Antal gäster:</strong></p><p>${data.NumberOfGuests} st</p>${formattedMessage ? `<p><strong>Kommentar, allergier eller annat:</strong></p><p>${formattedMessage}</p>` : ""}</div>`;
   }
 
   const onSubmit = async (data: IContactForm) => {
@@ -65,6 +67,7 @@ const BookingForm = () => {
         name: data.FullName,
         email: data.Email,
         business: data.Business,
+        businessInfo: data.BusinessInfo,
         phone: data.PhoneNumber,
         date: data.Date,
         time: data.Time,
@@ -454,6 +457,36 @@ const BookingForm = () => {
                 {errors.Business?.message}
               </p>
             </div>
+            <div className="flex flex-col gap-1 mb-4">
+              <label className="text-sm" htmlFor="BusinessInfo">
+                Faktureringsuppgifter*{" "}
+                <span className="text-gray-500">(Ex. org.nr, fakturaadress och referens)</span>
+              </label>
+              <textarea
+                maxLength={1000}
+                className={twMerge(
+                  "h-64 resize-none whitespace-pre-line",
+                  baseClasses,
+                  errors["BusinessInfo"] ? errorClass : "",
+                )}
+                {...register("BusinessInfo", {
+                  required: "Fyll i faktureringsuppgifter",
+                  maxLength: {
+                    value: 1000,
+                    message: "Max 1000 tecken",
+                  },
+                })}
+              ></textarea>
+              <p
+                role="alert"
+                className={twMerge(
+                  errorTextBaseClass,
+                  errors["BusinessInfo"] ? errorTextVisibleClasses : errorTextHiddenClasses,
+                )}
+              >
+                {errors.BusinessInfo?.message}
+              </p>
+            </div>
             <div className="flex flex-col gap-1">
               <label className="text-sm" htmlFor="Message">
                 Kommentar, allergier eller annat <span className="text-gray-500">(valfritt)</span>
@@ -521,6 +554,9 @@ const BookingForm = () => {
       {formSubmitted ? (
         <div className="text-center flex flex-col gap-8">
           <div className="flex flex-col gap-2">
+            <div className="mx-auto mt-4 mb-2">
+              <CheckCircle2 className="text-green-600" size={38} />
+            </div>
             <h6 className="text-2xl md:text-3xl">Tack!</h6>
             <p className="whitespace-pre-line text-balance text-xl">Din bokning är mottagen.</p>
           </div>
