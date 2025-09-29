@@ -185,12 +185,12 @@ const BookingForm = () => {
                       >
                         <Minus size={18} />
                       </button>
-                      <div className="text-base">{numberOfGuests}</div>
+                      <div className="text-base">{numberOfGuests} st</div>
                       <button
                         type="button"
                         className="p-2 hover:bg-secondary/75 rounded-md"
                         onClick={() => {
-                          if (numberOfGuests && numberOfGuests < 50) {
+                          if (numberOfGuests && numberOfGuests < 100) {
                             const newVal = (numberOfGuests ?? 1) + 1;
                             setNumberOfGuests(newVal);
                             setValue("NumberOfGuests", newVal.toString(), { shouldValidate: true });
