@@ -6,6 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Calendar } from "@/components/ui/calendar";
+import { bookingSlots } from "@/data/bookingSlots";
 import { IContactForm } from "@/types/IContactForm";
 import { CheckCircle2, ForkKnife, LucideCalendar, Minus, Plus, Timer } from "lucide-react";
 import { useState } from "react";
@@ -20,16 +21,7 @@ const BookingForm = () => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [numberOfGuests, setNumberOfGuests] = useState<number | undefined>(undefined);
   const [step, setStep] = useState(1);
-  const bookingSlots: { date: Date; times: string[]; status: string }[] = [
-    { date: new Date(2025, 11, 3), times: ["18:00"], status: "green" },
-    { date: new Date(2025, 11, 4), times: ["18:00"], status: "green" },
-    { date: new Date(2025, 11, 5), times: ["18:30"], status: "green" },
-    { date: new Date(2025, 11, 6), times: ["13:00"], status: "green" },
-    { date: new Date(2025, 11, 10), times: ["18:00"], status: "green" },
-    { date: new Date(2025, 11, 11), times: ["18:00"], status: "green" },
-    { date: new Date(2025, 11, 12), times: ["18:30"], status: "green" },
-    { date: new Date(2025, 11, 13), times: ["13:00"], status: "green" },
-  ];
+
   const numberOfGuestsOptions = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
   const totalSteps = 2;
   const {
@@ -181,7 +173,7 @@ const BookingForm = () => {
                           setActiveAccordion("item-2");
                         }}
                         className={twMerge(
-                          "aspect-square w-[50px] h-[50px] rounded-md border flex justify-center items-center text-base",
+                          "aspect-square w-[50px] h-[50px] rounded-md border flex justify-center items-center text-base cursor-pointer",
                           numberOfGuests === option
                             ? "bg-primary text-primary-foreground border-primary"
                             : "bg-background text-foreground border-primary/25 hover:border-primary",
@@ -201,7 +193,7 @@ const BookingForm = () => {
                         setValue("NumberOfGuests", newVal.toString(), { shouldValidate: true });
                       }}
                       className={twMerge(
-                        "aspect-square w-[50px] h-[50px] rounded-md border flex justify-center items-center text-base",
+                        "aspect-square w-[50px] h-[50px] rounded-md border flex justify-center items-center text-base cursor-pointer",
                         showMoreGuests
                           ? "bg-primary text-primary-foreground border-primary"
                           : "bg-background text-foreground border-primary/25 hover:border-primary",
@@ -214,7 +206,7 @@ const BookingForm = () => {
                     <div className="flex items-center gap-2 p-1 border justify-between rounded-md mt-4">
                       <button
                         type="button"
-                        className="p-2 hover:bg-secondary/75 rounded-md"
+                        className="p-2 hover:bg-secondary/75 rounded-md cursor-pointer"
                         onClick={() => {
                           if (numberOfGuests && numberOfGuests > 4) {
                             setNumberOfGuests((numberOfGuests ?? 1) - 1);
@@ -226,7 +218,7 @@ const BookingForm = () => {
                       <div className="text-base">{numberOfGuests} st</div>
                       <button
                         type="button"
-                        className="p-2 hover:bg-secondary/75 rounded-md"
+                        className="p-2 hover:bg-secondary/75 rounded-md cursor-pointer"
                         onClick={() => {
                           if (numberOfGuests && numberOfGuests < 100) {
                             const newVal = (numberOfGuests ?? 1) + 1;
@@ -259,6 +251,14 @@ const BookingForm = () => {
                     hideNavigation
                     showOutsideDays
                     mode="single"
+                    modifiers={{
+                      red: bookingSlots
+                        .filter((slot) => slot.status === "red")
+                        .map((slot) => slot.date),
+                      green: bookingSlots
+                        .filter((slot) => slot.status === "green")
+                        .map((slot) => slot.date),
+                    }}
                     selected={date}
                     onSelect={(date) => {
                       if (date === undefined || date === null) {
@@ -285,6 +285,7 @@ const BookingForm = () => {
                       { before: new Date(2025, 11, 3) },
                       { after: new Date(2025, 11, 13) },
                       { from: new Date(2025, 11, 7), to: new Date(2025, 11, 9) },
+                      ...bookingSlots.filter((s) => s.status === "red").map((s) => s.date),
                     ]}
                   />
                 </AccordionContent>
