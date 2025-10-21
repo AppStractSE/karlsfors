@@ -123,7 +123,7 @@ const BookingForm = () => {
   };
 
   const baseClasses =
-    "text-base w-full bg-white rounded p-2 border-primary/25 shadow-sm focus:outline-none border ring-0 focus:border-primary focus-visible:outline-offset-0 transition-all duration-500 ease-in-out";
+    "text-base w-full bg-background rounded p-2 border-primary/25 shadow-sm focus:outline-none border ring-0 focus:border-primary focus-visible:outline-offset-0 transition-all duration-500 ease-in-out";
 
   const errorClass = "border-red-500 placeholder:text-red-500";
   const errorTextBaseClass =
@@ -561,7 +561,7 @@ const BookingForm = () => {
 
             <div className="flex flex-col gap-1">
               <label className="text-xs" htmlFor="Message">
-                Kommentar, allergier eller annat <span className="text-gray-500">(valfritt)</span>
+                Kommentar, allergier eller annat <span className="text-primary/50">(valfritt)</span>
               </label>
               <textarea
                 maxLength={500}
