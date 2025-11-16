@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     const apiKey = process.env.API_KEY;
 
-    const externalResponse = await fetch("http://sphere.appstract.se:5302/mail/sendcontactform", {
+    const externalResponse = await fetch("https://api.appstract.se/mail/sendcontactform", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
