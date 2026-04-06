@@ -2,7 +2,7 @@ let iframe = null;
 
 function initializeIframe(el) {
   iframe = document.createElement("iframe");
-  iframe.src = "https://karlsfors.appstract.se/";
+  iframe.src = "http://localhost:3001/";
   iframe.style.border = "0";
   iframe.style.width = "100%";
   iframe.height = "0";

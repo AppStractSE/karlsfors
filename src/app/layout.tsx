@@ -1,11 +1,11 @@
-import IframeResizer from "@/components/IframeResizer";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
+const inter = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Karlsfors Julbordsbokning - Powered by Appstract",
-  description: "Karlsfors Julbordsbokning - Powered by Appstract",
+  title: "Tillfälle",
+  description: "Eventhantering av Appstract",
 };
 
 export default function RootLayout({
@@ -25,8 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sv">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <IframeResizer>{children}</IframeResizer>
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+        {children}
       </body>
     </html>
   );
