@@ -2,7 +2,8 @@ let iframe = null;
 
 function initializeIframe(el) {
   iframe = document.createElement("iframe");
-  iframe.src = "http://localhost:3001/";
+  iframe.src = "https://karlsfors.appstract.se/booking";
+  // iframe.src = "http://localhost:3000/booking";
   iframe.style.border = "0";
   iframe.style.width = "100%";
   iframe.height = "0";

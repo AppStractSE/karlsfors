@@ -280,11 +280,11 @@ const BookingForm = () => {
                     className="border"
                     captionLayout="label"
                     buttonVariant="outline"
-                    startMonth={new Date(2025, 11, 1)}
+                    startMonth={new Date(2026, 11, 1)}
                     disabled={[
-                      { before: new Date(2025, 11, 3) },
-                      { after: new Date(2025, 11, 13) },
-                      { from: new Date(2025, 11, 7), to: new Date(2025, 11, 9) },
+                      { before: new Date(2026, 11, 3) },
+                      { after: new Date(2026, 11, 13) },
+                      { from: new Date(2026, 11, 6), to: new Date(2026, 11, 9) },
                       ...bookingSlots.filter((s) => s.status === "red").map((s) => s.date),
                     ]}
                   />
