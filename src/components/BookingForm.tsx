@@ -468,13 +468,12 @@ const BookingForm = () => {
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-xs" htmlFor="Business">
-                  Företagsnamn*
+                  Företagsnamn <span className="text-primary/50">(valfritt)</span>
                 </label>
                 <input
                   className={twMerge(baseClasses, errors["Business"] ? errorClass : "")}
                   type="text"
                   {...register("Business", {
-                    required: "Fyll i företagsnamn",
                   })}
                 />
                 <p
@@ -489,14 +488,13 @@ const BookingForm = () => {
               </div>
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-xs" htmlFor="OrgNumber">
-                  Organisationsnummer*
+                  Organisationsnummer <span className="text-primary/50">(valfritt)</span>
                 </label>
                 <input
                   className={twMerge(baseClasses, errors["OrgNumber"] ? errorClass : "")}
                   type="text"
                   placeholder="123456-7890"
                   {...register("OrgNumber", {
-                    required: "Fyll i organisationsnummer",
                     pattern: {
                       value: /^\d{6}-?\d{4}$/,
                       message: "Ogiltigt organisationsnummer",
@@ -517,13 +515,12 @@ const BookingForm = () => {
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-xs" htmlFor="BusinessAddress">
-                  Företagsadress*
+                  Företagsadress <span className="text-primary/50">(valfritt)</span>
                 </label>
                 <input
                   className={twMerge(baseClasses, errors["BusinessAddress"] ? errorClass : "")}
                   type="text"
                   {...register("BusinessAddress", {
-                    required: "Fyll i företagsadress",
                   })}
                 />
                 <p
@@ -538,13 +535,12 @@ const BookingForm = () => {
               </div>
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-xs" htmlFor="InvoiceAddress">
-                  Faktureringsadress*
+                  Faktureringsadress <span className="text-primary/50">(valfritt)</span>
                 </label>
                 <input
                   className={twMerge(baseClasses, errors["InvoiceAddress"] ? errorClass : "")}
                   type="text"
                   {...register("InvoiceAddress", {
-                    required: "Fyll i faktureringsadress",
                   })}
                 />
                 <p
